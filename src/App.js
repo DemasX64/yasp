@@ -1,60 +1,57 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import './App.css';
 
 function App() {
-
+  const canvas = useRef()
+  const video = useRef()
   const [answer, setAnswer] = useState('')
   const [request, setRequest] = useState(false)
-
-  const  paste = async () => {
-  try {
-    const clipboardItems = await navigator.clipboard.read();
-    for (const clipboardItem of clipboardItems) {
-      for (const type of clipboardItem.types) {
-        if(type === 'image/png') {
-          const blob = await clipboardItem.getType(type);
-          const file = new File([blob], 'screenshot');
-          sendScreenshot(file)
-        } 
-        else {
-          alert('Нет изображения в буфере обмена')
-        }
-        
-        }
-    }
-  } catch (err) {
-    console.error(err.name, err.message);
-  }
-  }
 
   const sendScreenshot = async (image) => {
     const data = new FormData()
     data.append('screenshot', image)
     setRequest(true)
-    await fetch('http://158.160.45.164:3000/screenshot/add', {
+    await fetch('http://localhost:3000/screenshot/add', {
       method: 'POST',
       body: data
     }).then((res) => res.json()).then((json) => setAnswer(json.recognizedText));
     setRequest(false)
   }
 
-  // не сработало из-за безопасности браузера
-
-  // useEffect(() => {
-  //   window.addEventListener('keyup', (event) => {
-  //     if(event.keyCode === 44){
-  //       paste()
-  //     }
-  //   }
-  //   )
-  // },[])
+  const getScreenshot = async () => {
+    try {
+      const displayMediaOptions = {
+        video: {
+          cursor: "never"
+        },
+        audio: false
+      }
+      video.current.srcObject = await navigator.mediaDevices.getDisplayMedia(displayMediaOptions);   
+      video.current.addEventListener('loadeddata', async () => {
+        const context = canvas.current.getContext('2d')
+        const videoTrack = video.current.srcObject?.getVideoTracks()[0];
+        if (videoTrack) {
+          const { height, width } = videoTrack.getSettings();
+          canvas.current.width = width;
+          canvas.current.height = height;
+          context.drawImage(video.current, 0, 0, width, height);
+          canvas.current.toBlob((result) => sendScreenshot(result))
+          videoTrack.stop();
+        }
+      }, { once: true });
+    } catch (e) {
+      console.log(e)
+    }
+  }
 
   return (
     <div className="App">
-      <p>Нажмите Print Screen</p>
+      <canvas ref={canvas} style={{position:'absolute', visibility:'hidden'}}/>
+      <video ref={video} style={{position:'absolute', visibility:'hidden'}} autoPlay/>
+      <p>Теперь это одна кнопка</p>
+      <p>(Ну, почти 😢)</p>
       <p>Нажмите отправить </p>
-      <p>(Да, это не одна кнопка 😢)</p>
-      <button type='button' onClick={paste} disabled={request}>Отправить</button>
+      <button type='button' onClick={getScreenshot} disabled={request}>Отправить</button>
       {request && <p>Загрузка...</p>}
       {answer && 
         <div>
