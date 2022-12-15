@@ -1,70 +1,38 @@
-# Getting Started with Create React App
+# Тестовое задание для ЯСП
+Тестовое разбито на две части:
+ - [Фронтенд](https://github.com/DemasX64/yasp)
+ - [Бэкенд](https://github.com/DemasX64/yasp-backend)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Для запуска фронтенда и бэкенда:
 
-## Available Scripts
+**npm install** и **npm start**
 
-In the project directory, you can run:
+Сервер распологается на Yandex.Cloud. (Google забанил Россию)
 
-### `npm start`
+Распознавание изображений происходит на сервере через библиотеку tesseract.
+## Стэк
+(Линтеры и ts не использовал в этом тестовом)
+### Frontend
+- react
+### Backend
+- express - создание сервера
+- express-fileupload - удобная загрузка файлов
+- uuid - для создания уникальных id
+- tesseract.js - распознавание текста
+- cors - для поддержки cors
+## Описание
+Моя реализация состоит в том:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+При нажатии на кнопку происходит проверка, есть ли в буфере обмена , если нет, то надо нажать PrintScreen.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+(Хотел сделать, чтобы сразу после нажатия на PrintScreen происходила отправка, но браузер не дает так делать).
 
-### `npm test`
+Далее происходит отправка на сервер.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Успешный ответ приходит в виде:
 
-### `npm run build`
+``{
+        id: '123', recognizedText: 'text'
+}``
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+P.S. Других идей как достать полное изображение экрана в браузере не было
